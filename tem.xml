@@ -1,0 +1,146 @@
+<root>
+<SourceSystem Name ="MYSQL">
+	<Queries 
+		Query_1 = "SELECT accountid FROM account WHERE updated BETWEEN '%1' and current_timestamp"
+		Query_2 = "SELECT accountid FROM contact WHERE updated BETWEEN '%1' and current_timestamp"
+		Query_3 = "SELECT accountid FROM contact_address WHERE updated BETWEEN '%1' and current_timestamp"
+		>
+	</Queries>
+	
+	<Properties
+		Queries_parameter = "3"
+		db.user = "root"
+		db.passwd = ""
+		db.url = "jdbc:mysql://localhost:3306/charter"
+		db.driver = "com.mysql.jdbc.Driver"
+
+		scheduler_Timer = "1000"
+
+		key = "Key1"
+		topicName = "avro"
+		bootstrap = "bootstrap.servers"
+		host = "localhost:9092"
+		keyserializer = "org.apache.kafka.common.serialization.StringSerializer"
+		valueserializer = "org.apache.kafka.common.serialization.StringSerializer"
+
+		keySerial = "key.serializer"
+		valueSerial = "value.serializer">
+	</Properties>
+	<RecordSnapshot_Queries
+		SQL_Account = "select accountid, name, updated from account where accountid = "
+
+		SQL_Account_Address= "select aa.accountid, aa.addressid, aa.city, aa.updated from account_address aa, account a where aa.accountid = a.accountid and a.accountid = "
+
+		SQL_Contact = "select contactid, accountid, fn, ln, updated from contact where accountid = "
+
+		SQL_Contact_Address= "select ca.contactid, ca.addressid, ca.city, ca.updated from contact_address ca, contact c, charter.account a where ca.contactid = c.contactid and c.accountid = a.accountid and a.accountid = "
+		>
+		</RecordSnapshot_Queries>
+
+	<Account>
+         
+		<Attribute SourceType="INT" TargetType="INT" SourceName="accountid" TargetName="AccountID"></Attribute>
+		<Attribute SourceType="String" TargetType="String" SourceName="name" TargetName="AccountName"></Attribute>
+		<Attribute SourceType="String" TargetType="String" SourceName="updated" TargetName="UpdatedDate"></Attribute>
+
+		<ChildEntity_Account_Address>
+			<Attribute SourceType="INT" TargetType="INT" SourceName="accountid" TargetName="AccountID"></Attribute>
+			<Attribute SourceType="INT" TargetType="INT" SourceName="addressid" TargetName="AddressID"></Attribute>
+			<Attribute SourceType="String" TargetType="String" SourceName="city" TargetName="City"></Attribute>
+			<Attribute SourceType="String" TargetType="String" SourceName="updated" TargetName="UpdatedDate"></Attribute>
+		</ChildEntity_Account_Address>
+
+	    <ChildEntity_Contact  	>
+		  <Attribute SourceType="INT" TargetType="INT" SourceName="contactid" TargetName="ContactID"></Attribute>
+		  <Attribute SourceType="INT" TargetType="INT" SourceName="accountid" TargetName="AccountID"></Attribute>
+		  <Attribute SourceType="String" TargetType="String" SourceName="fn" TargetName="FirstName"></Attribute>
+		  <Attribute SourceType="String" TargetType="String" SourceName="ln" TargetName="LastName"></Attribute>
+		  <Attribute SourceType="String" TargetType="String" SourceName="updated" TargetName="UpdatedDate"></Attribute>
+		</ChildEntity_Contact>
+		
+		<ChildEntity_Contact_Address>
+			<Attribute SourceType="INT" TargetType="INT" SourceName="contactid" TargetName="ContactID"></Attribute>
+			<Attribute SourceType="INT" TargetType="INT" SourceName="addressid" TargetName="AddressID"></Attribute>
+			<Attribute SourceType="String" TargetType="String" SourceName="city" TargetName="City"></Attribute>
+			<Attribute SourceType="String" TargetType="String" SourceName="updated" TargetName="UpdatedDate"></Attribute>
+		
+		</ChildEntity_Contact_Address>
+		
+	</Account>
+</SourceSystem>
+<SourceSystem Name ="Siebel">
+	<Queries 
+	Query_1 = "SELECT acc_id FROM acc_siebel WHERE last_modifieddate BETWEEN '%1' and current_timestamp"
+	Query_2 = "SELECT acc_id FROM con_siebel WHERE last_modifieddate BETWEEN '%1' and current_timestamp"
+	Query_3 = "SELECT acc_id FROM con_add_siebel WHERE last_modifieddate BETWEEN '%1' and current_timestamp"
+		>
+	</Queries>
+	
+	<Properties-1
+		Queries_parameter = "3"
+		db.user = "root"
+		db.passwd = ""
+		db.url = "jdbc:mysql://localhost:3306/newdb"
+		db.driver = "com.mysql.jdbc.Driver"
+
+		scheduler_Timer = "1000"
+
+		key = "Key1"
+		topicName = "avro"
+		bootstrap = "bootstrap.servers"
+		host = "localhost:9092"
+		keyserializer = "org.apache.kafka.common.serialization.StringSerializer"
+		valueserializer = "org.apache.kafka.common.serialization.StringSerializer"
+
+		keySerial = "key.serializer"
+		valueSerial = "value.serializer">
+	</Properties-1>
+	
+	<RecordSnapshot_Queries
+		SQL_Account = "select acc_id, acc_name, last_modifieddate from acc_siebel where acc_id = %1"
+		SQL_Account_Address  = "select con_id, acc_id, firstname, lastname, last_modifieddate from con_siebel where acc_id = %1"
+		SQL_Contact = "select ca.con_id, ca.add_id, ca.city, ca.last_modifieddate from  con_add_siebel ca, con_siebel c, acc_siebel a where ca.con_id = c.con_id and c.acc_id = a.acc_id and a.acc_id = %1"
+
+		SQL_Contact_Address = "select aa.acc_id, aa.add_id, aa.city, aa.last_modifieddate from acc_add_aiebel aa, acc_siebel a where aa.acc_id = a.acc_id and a.acc_id = %1"
+		>
+		</RecordSnapshot_Queries>
+
+	<Account >
+         
+		<Attribute SourceType="INT" TargetType="INT" SourceName="acc_id" TargetName="Account_ID"></Attribute>
+		<Attribute SourceType="String" TargetType="String" SourceName="acc_name" TargetName="Account_Name"></Attribute>
+		<Attribute SourceType="String" TargetType="String" SourceName="last_modifieddate" TargetName="Updated_Date"></Attribute>
+
+		<ChildEntity_Account_Address>
+			<Attribute SourceType="INT" TargetType="INT" SourceName="acc_id" TargetName="Account_ID"></Attribute>
+			<Attribute SourceType="INT" TargetType="INT" SourceName="add_id" TargetName="Address_ID"></Attribute>
+			<Attribute SourceType="String" TargetType="String" SourceName="city" TargetName="City"></Attribute>
+			<Attribute SourceType="String" TargetType="String" SourceName="last_modifieddate" TargetName="Updated_Date"></Attribute>
+		
+		</ChildEntity_Account_Address>
+
+	    <ChildEntity_Contact>
+		
+		  <Attribute SourceType="INT" TargetType="INT" SourceName="con_id" TargetName="Contact_ID"></Attribute>
+		  <Attribute SourceType="INT" TargetType="INT" SourceName="acc_id" TargetName="Account_ID"></Attribute>
+		  <Attribute SourceType="String" TargetType="String" SourceName="fn" TargetName="FirstName"></Attribute>
+		  <Attribute SourceType="String" TargetType="String" SourceName="ln" TargetName="LastName"></Attribute>
+		  <Attribute SourceType="String" TargetType="String" SourceName="last_modifieddate" TargetName="Updated_Date"></Attribute>
+		  
+		</ChildEntity_Contact>
+				
+		<ChildEntity_Contact_Address>
+		
+			<Attribute SourceType="INT" TargetType="INT" SourceName="add_id" TargetName="Address_ID"></Attribute>
+			<Attribute SourceType="INT" TargetType="INT" SourceName="con_id" TargetName="Contact_ID"></Attribute>
+			<Attribute SourceType="String" TargetType="String" SourceName="city" TargetName="City"></Attribute>
+			<Attribute SourceType="String" TargetType="String" SourceName="last_modifieddate" TargetName="Updated_Date"></Attribute>
+		
+		</ChildEntity_Contact_Address>
+				
+	</Account>
+		
+
+</SourceSystem>
+
+</root>
